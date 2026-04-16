@@ -12,7 +12,18 @@
     "win": {
       "target": "portable",
       "icon": "icon.png"
-    }
+    },
+    "files": [
+      "main.js",
+      "renderer.js",
+      "index.html",
+      "preload.js",
+      "styles.css",
+      "icon.png",
+      "icon-blue.png",
+      "package.json",
+      "node_modules/**/*"
+    ]
   },
   "keywords": [],
   "author": "",
