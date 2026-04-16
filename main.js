@@ -13,7 +13,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 1100,
-    title: 'SoundboAArd',
+    title: 'SoundBαɒrd',
     backgroundColor: '#0f172a',
     icon: path.join(__dirname, 'icon.png'),
     webPreferences: {

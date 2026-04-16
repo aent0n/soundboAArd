@@ -8,7 +8,7 @@
   },
   "build": {
     "appId": "com.notna.soundboaard",
-    "productName": "SoundboAArd",
+    "productName": "SoundBαɒrd",
     "win": {
       "target": "portable",
       "icon": "icon.png"

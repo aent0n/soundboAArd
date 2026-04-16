@@ -1,10 +1,10 @@
-# SoundboAArd
+# SoundBαɒrd 🎵
 
 <p align="center">
-  <img src="icon.png" width="128" alt="SoundboAArd Logo">
+  <img src="icon.png" width="128" alt="SoundBαɒrd Logo">
 </p>
 
-> **SoundboAArd** est un routeur et mixeur audio léger conçu pour les créateurs de contenu.
+> **SoundBαɒrd** est un routeur et mixeur audio léger conçu pour les créateurs de contenu.
 
 Cette première itération, Luth, pose les bases de l'outil permettant de capturer, découper et diffuser du son en direct.
 
@@ -18,5 +18,5 @@ Cette première itération, Luth, pose les bases de l'outil permettant de captur
 
 ### 🚀 Démarrage rapide
 1. Téléchargez la dernière version sur la page [Releases](https://github.com/aent0n/soundboAArd/releases).
-2. Lancez `SoundboAArd.exe`.
+2. Lancez `SoundBαɒrd.exe`.
 3. Configurez vos périphériques d'entrée et de sortie.
