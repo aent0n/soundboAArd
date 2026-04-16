@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoundboAArd</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- Sidebar / Settings Panel -->
+    <aside class="sidebar">
+      <div class="sidebar-header" style="display:flex; align-items:center; gap:12px;">
+        <img src="icon-blue.png" id="sidebarLogo" alt="Logo"
+          style="height:48px; width:auto; border-radius:12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+        <div>
+          <h1 style="font-size: 1.5rem; letter-spacing: -0.5px;">SoundboAArd</h1>
+          <p class="subtitle" style="font-size: 0.8rem; margin-top:2px;">Audio Router & Mixer</p>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <h2
+          style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center;">
+          Configuration
+          <div style="display:flex; gap:4px;">
+            <button id="toggleColorBtn" class="btn btn-text"
+              style="font-size: 11px; padding: 4px 8px; border: 1px solid var(--border);"
+              title="Alterner les couleurs (Sombre / Argenté)">Couleurs</button>
+            <button id="toggleUIBtn" class="btn btn-text"
+              style="font-size: 11px; padding: 4px 8px; border: 1px solid var(--border);"
+              title="Masquer la configuration et passer en vue épurée">Épuré</button>
+          </div>
+        </h2>
+
+        <div class="input-group" title="Microphone principal captant la voix envoyée au mixeur.">
+          <label for="inputDevice">Input (Microphone)</label>
+          <select id="inputDevice">
+            <option value="">Sélectionnez un appareil...</option>
+          </select>
+        </div>
+
+        <div class="input-group"
+          title="Câble virtuel sur lequel la sortie vocale du logiciel de communication est paramétrée.">
+          <label for="discordDevice">Écoute & Snipping (Discord / Autre)</label>
+          <select id="discordDevice">
+            <option value="">Off (Aucun mixage secondaire)</option>
+          </select>
+        </div>
+
+        <div class="input-group"
+          title="Câble virtuel principal recevant le mix complet pour être utilisé comme entrée microphone cible.">
+          <label for="outputVirtualDevice">Sortie Virtuelle (VB-Cable)</label>
+          <select id="outputVirtualDevice">
+            <option value="">Sélectionnez un appareil...</option>
+          </select>
+        </div>
+
+        <div class="input-group"
+          title="Périphérique de lecture physique permettant le retour audio sans écho de l'entrée principale.">
+          <label for="outputMonitorDevice">Monitoring (Casque)</label>
+          <select id="outputMonitorDevice">
+            <option value="">Sans monitoring</option>
+          </select>
+        </div>
+
+        <div class="input-group" style="margin-top: 8px;"
+          title="Raccourci clavier défini pour démarrer et arrêter l'enregistrement instantané de la source secondaire.">
+          <label>Raccourci REC (Discord/Autre)</label>
+          <input type="text" id="discordRecordShortcutInput" placeholder="Cliquez et tapez..." readonly
+            style="cursor: pointer; background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2);">
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <h2>Volumes (Mixer)</h2>
+        <div class="volume-control">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label for="micVolume">Micro (<span id="micVolText" style="color:var(--primary);">100%</span>)</label>
+            <a href="#" id="nvidiaLink"
+              style="font-size: 11px; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px;"
+              title="Ouvrir NVIDIA Broadcast">
+              Nvidia Broadcast
+            </a>
+          </div>
+          <input type="range" id="micVolume" min="0" max="4" step="0.05" value="1">
+        </div>
+        <div class="volume-control">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label for="boardVolume">Soundboard (<span id="boardVolText"
+                style="color:var(--primary);">80%</span>)</label>
+            <label
+              style="display:flex; align-items:center; gap:4px; font-weight:normal; font-size:11px; cursor:pointer;"
+              title="Coupe le retour casque">
+              <input type="checkbox" id="muteMonitorCheck"> Mute
+            </label>
+          </div>
+          <input type="range" id="boardVolume" min="0" max="4" step="0.05" value="0.8">
+        </div>
+      </div>
+
+      <div class="settings-group workflow-group">
+        <h2
+          style="display:flex; justify-content:space-between; align-items:center; border-bottom: none; padding-bottom: 0;">
+          <span>État du Workflow</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span id="globalRecIndicator" class="hidden"
+              style="color:var(--danger); font-size:10px; font-weight:bold; animation: blink 1s infinite;">ENREGISTREMENT</span>
+            <span id="workflowRealtimeText"
+              style="font-size:10px; font-weight:normal; text-transform:none; color:var(--text-muted);">En temps
+              réel</span>
+          </div>
+        </h2>
+        <div class="workflow-chain">
+          <div class="workflow-node" id="node-mic" title="Entrée microphone physique.">
+            <span class="status-dot"></span>
+            <span class="node-label">Micro / C.Son</span>
+          </div>
+          <div class="workflow-connector" id="conn-1"></div>
+          <div class="workflow-node" id="node-nvidia" title="Boucle de suppression de bruit numérique optionnelle.">
+            <span class="status-dot"></span>
+            <span class="node-label">Nvidia Broadcast</span>
+          </div>
+          <div class="workflow-connector" id="conn-2"></div>
+          <div class="workflow-node active" id="node-soundboard"
+            title="Mixeur logiciel interne centralisant et routant les flux.">
+            <span class="status-dot"></span>
+            <span class="node-label">SoundboAArd</span>
+          </div>
+          <div class="workflow-connector" id="conn-3"></div>
+          <div class="workflow-node" id="node-discord"
+            title="Câble virtuel renvoyant le flux final vers le réseau ou le logiciel cible.">
+            <span class="status-dot"></span>
+            <span class="node-label">Sortie Discord</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Main Soundboard Area -->
+    <main class="main-content">
+      <div class="main-header">
+        <div style="display:flex; align-items:center; gap:16px;">
+          <img src="icon.png" id="mainHeaderLogo" alt="Logo"
+            style="height:32px; width:auto; border-radius:6px; display:none;">
+          <h2>Vos sons</h2>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <button id="toggleUIMainBtn" class="btn btn-text"
+            style="font-size: 11px; padding: 4px 12px; border: 1px solid var(--border);"
+            title="Réafficher la barre de configuration latérale">Configuration</button>
+          <button id="addSoundBtn" class="btn btn-primary">+ Ajouter un son</button>
+        </div>
+      </div>
+
+      <!-- Add/Edit form (hidden by default) -->
+      <div id="soundFormOverlay" class="overlay hidden">
+        <div class="modal">
+          <h3>Ajouter un son</h3>
+          <div class="input-group">
+            <label>Nom du son</label>
+            <input type="text" id="soundNameInput" placeholder="Ex: Applaudissements">
+          </div>
+          <div class="input-group">
+            <label>Fichier Audio</label>
+            <div class="file-picker" style="display:flex; gap:8px;">
+              <button id="pickFileBtn" class="btn btn-secondary">Parcourir</button>
+              <button id="recordMicBtn" class="btn btn-secondary"
+                style="background:var(--bg-panel); color:var(--danger); border-color:rgba(239, 68, 68, 0.3);">Rec</button>
+            </div>
+            <span id="filePathDisplay" class="file-path" style="margin-top: 4px;">Aucun fichier</span>
+          </div>
+          <div class="input-group">
+            <label>Raccourci Clavier</label>
+            <input type="text" id="shortcutInput" placeholder="Cliquez ici et tapez vos touches..." readonly
+              style="cursor: pointer; background: rgba(59, 130, 246, 0.1);">
+            <small style="margin-top:-4px; color:var(--text-muted);">Appuyez sur "Échap" pour annuler le
+              raccourci.</small>
+          </div>
+          <div class="modal-actions">
+            <button id="cancelSoundBtn" class="btn btn-text">Annuler</button>
+            <button id="saveSoundBtn" class="btn btn-primary">Enregistrer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trimmer/Snipper form (hidden by default) -->
+      <div id="trimmerOverlay" class="overlay hidden">
+        <div class="modal" style="max-width: 600px;">
+          <h3 style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Découper la sélection</span>
+            <span id="trimmerDuration" style="font-size:12px; color:var(--text-muted); font-weight:normal;">0.0s</span>
+          </h3>
+          <div id="waveform" class="waveform-box">
+          </div>
+
+          <div style="display:flex; gap: 8px; justify-content: center; margin-bottom: 16px;">
+            <button id="trimmerPlayPauseBtn" class="btn btn-secondary">Écouter la sélection</button>
+          </div>
+
+          <div class="input-group">
+            <label>Nom du nouveau son</label>
+            <input type="text" id="trimmerNameInput" placeholder="Ex: Rire">
+          </div>
+
+          <div class="modal-actions">
+            <button id="trimmerCancelBtn" class="btn btn-text">Jeter</button>
+            <button id="trimmerSaveBtn" class="btn btn-primary"
+              style="background:#10b981; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">Sauvegarder le snippet</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sounds Grid -->
+      <div class="grid" id="soundsGrid">
+        <!-- Sound cards will be dynamically added here -->
+      </div>
+    </main>
+  </div>
+
+  <script src="node_modules/wavesurfer.js/dist/wavesurfer.min.js"></script>
+  <script src="node_modules/wavesurfer.js/dist/plugins/regions.min.js"></script>
+  <script src="renderer.js"></script>
+</body>
+
+</html>
